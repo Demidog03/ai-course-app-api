@@ -13,6 +13,7 @@ export default class AuthController {
     return response.ok({
       type: 'bearer',
       token: token.value!.release(),
+      message: `Welcome back, ${user.fullName}!`,
     })
   }
 
