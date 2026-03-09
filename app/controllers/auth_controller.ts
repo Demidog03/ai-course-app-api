@@ -7,12 +7,16 @@ export default class AuthController {
     const { email, password } = await request.validateUsing(loginValidator)
 
     const user = await User.verifyCredentials(email, password)
+    if (user) {
+      await user.load('role')
+    }
 
     const token = await User.accessTokens.create(user)
 
     return response.ok({
       type: 'bearer',
       token: token.value!.release(),
+      user: user.serialize(),
       message: `Welcome back, ${user.fullName}!`,
     })
   }

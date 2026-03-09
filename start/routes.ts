@@ -9,6 +9,7 @@
 
 import router from '@adonisjs/core/services/router'
 import { middleware } from '#start/kernel'
+// import {RolesEnum} from "../app/enums/role_enums.js";
 
 router.get('/', async () => {
   return {
@@ -33,6 +34,7 @@ router
     router
       .group(() => {
         router.get('/me', [UsersController, 'me'])
+        // router.get('/test', [UsersController, 'me']).use(middleware.role([RolesEnum.ADMIN]))
       })
       .prefix('/users')
       .use(middleware.auth({ guards: ['api'] }))

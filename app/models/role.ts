@@ -2,13 +2,14 @@ import { DateTime } from 'luxon'
 import { BaseModel, column, hasMany } from '@adonisjs/lucid/orm'
 import User from '#models/user'
 import { type HasMany } from '@adonisjs/lucid/types/relations'
+import { RolesEnum } from '../enums/role_enums.js'
 
 export default class Role extends BaseModel {
   @column({ isPrimary: true })
   declare id: number
 
   @column()
-  declare name: string
+  declare name: RolesEnum
 
   @column()
   declare description: string
