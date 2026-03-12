@@ -9,6 +9,8 @@
 
 import router from '@adonisjs/core/services/router'
 import { middleware } from '#start/kernel'
+const CoursesController = () => import('#controllers/courses_controller')
+import { RolesEnum } from '../app/enums/role_enums.js'
 // import {RolesEnum} from "../app/enums/role_enums.js";
 
 router.get('/', async () => {
@@ -21,6 +23,7 @@ router.get('/', async () => {
 const AuthController = () => import('#controllers/auth_controller')
 const UsersController = () => import('#controllers/users_controller')
 
+// AUTH ROUTES
 router
   .group(() => {
     router
@@ -40,3 +43,21 @@ router
       .use(middleware.auth({ guards: ['api'] }))
   })
   .prefix('/api/v1')
+
+// COURSE ROUTES
+router
+  .group(() => {
+    router.get('/courses', [CoursesController, 'index'])
+    router.get('/courses/:id', [CoursesController, 'show'])
+    router
+      .post('/courses', [CoursesController, 'store'])
+      .use(middleware.role([RolesEnum.ADMIN, RolesEnum.AUTHOR]))
+    router
+      .put('/courses/:id', [CoursesController, 'update'])
+      .use(middleware.role([RolesEnum.ADMIN, RolesEnum.AUTHOR]))
+    router
+      .delete('/courses/:id', [CoursesController, 'destroy'])
+      .use(middleware.role([RolesEnum.ADMIN, RolesEnum.AUTHOR]))
+  })
+  .prefix('/api/v1')
+  .use(middleware.auth({ guards: ['api'] }))
