@@ -14,6 +14,9 @@ export default class Course extends BaseModel {
   @column()
   declare isPublished: boolean
 
+  @column()
+  declare authorId: number
+
   @column.dateTime({ autoCreate: true })
   declare createdAt: DateTime
 
