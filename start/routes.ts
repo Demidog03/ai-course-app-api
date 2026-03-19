@@ -48,6 +48,7 @@ router
 router
   .group(() => {
     router.get('/courses', [CoursesController, 'index'])
+    router.get('/courses/my', [CoursesController, 'getMyCourses'])
     router.get('/courses/:id', [CoursesController, 'show'])
     router
       .post('/courses', [CoursesController, 'store'])

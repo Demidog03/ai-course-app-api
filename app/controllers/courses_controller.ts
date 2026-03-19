@@ -8,6 +8,19 @@ export default class CoursesController {
     return response.ok({ courses })
   }
 
+  async getMyCourses({ response, auth }: HttpContext) {
+    if (!auth?.user?.id) {
+      return response.unauthorized({
+        errors: [{ message: 'Не авторизован' }],
+      })
+    }
+    const courses = await Course.query()
+      .where('author_id', auth?.user?.id)
+      .orderBy('is_published', 'desc')
+      .orderBy('updatedAt', 'desc')
+    return response.ok({ courses })
+  }
+
   async show({ params, response, bouncer }: HttpContext) {
     const course = await Course.find(params.id)
 
