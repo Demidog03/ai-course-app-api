@@ -12,6 +12,9 @@ export default class Course extends BaseModel {
   declare description: string
 
   @column()
+  declare coverImage: string | null
+
+  @column()
   declare isPublished: boolean
 
   @column()

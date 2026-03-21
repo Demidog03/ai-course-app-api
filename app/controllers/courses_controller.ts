@@ -1,6 +1,8 @@
 import type { HttpContext } from '@adonisjs/core/http'
 import Course from '#models/course'
 import CoursePolicy from '#policies/course_policy'
+import { cuid } from '@adonisjs/core/helpers'
+import app from '@adonisjs/core/services/app'
 
 export default class CoursesController {
   async index({ response }: HttpContext) {
@@ -37,7 +39,30 @@ export default class CoursesController {
 
   async store({ request, response, auth }: HttpContext) {
     const data = request.only(['title', 'description', 'isPublished'])
-    const course = await Course.create({ ...data, authorId: auth.user!.id })
+
+    const coverImage = request.file('coverImage', {
+      size: '2mb',
+      extnames: ['jpg', 'jpeg', 'png', 'webp'],
+    })
+
+    let imagePath = null
+
+    if (coverImage) {
+      const fileName = `${cuid()}.${coverImage.extname}`
+
+      await coverImage.move(app.makePath('public/uploads'), {
+        name: fileName,
+      })
+
+      imagePath = `/uploads/${fileName}`
+    }
+
+    const course = await Course.create({
+      ...data,
+      coverImage: imagePath,
+      authorId: auth.user!.id,
+    })
+
     return response.created({ course })
   }
 
@@ -54,7 +79,24 @@ export default class CoursesController {
 
     const data = request.only(['title', 'description', 'isPublished'])
 
-    course.merge(data)
+    const coverImage = request.file('coverImage', {
+      size: '2mb',
+      extnames: ['jpg', 'jpeg', 'png', 'webp'],
+    })
+
+    let imagePath = null
+
+    if (coverImage) {
+      const fileName = `${cuid()}.${coverImage.extname}`
+
+      await coverImage.move(app.makePath('public/uploads'), {
+        name: fileName,
+      })
+
+      imagePath = `/uploads/${fileName}`
+    }
+
+    course.merge({ ...data, coverImage: imagePath })
     await course.save()
 
     return response.ok({ course })
