@@ -24,7 +24,12 @@ export default class CoursesController {
   }
 
   async show({ params, response, bouncer }: HttpContext) {
-    const course = await Course.find(params.id)
+    const course = await Course.query()
+      .where('id', params.id)
+      .preload('lessons', (query) => {
+        query.orderBy('orderIndex', 'asc')
+      })
+      .first()
 
     if (!course) {
       return response.notFound({
