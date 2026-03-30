@@ -12,6 +12,7 @@ import { middleware } from '#start/kernel'
 const CoursesController = () => import('#controllers/courses_controller')
 import { RolesEnum } from '../app/enums/role_enums.js'
 import LessonsController from "#controllers/lessons_controller";
+const UploadsController = () => import('#controllers/uploads_controller')
 // import {RolesEnum} from "../app/enums/role_enums.js";
 
 router.get('/', async () => {
@@ -64,6 +65,8 @@ router
     router.get('/courses/:course_id/lessons/:lesson_id', [LessonsController, 'show'])
     router.put('/courses/:course_id/lessons/:lesson_id', [LessonsController, 'update'])
     router.delete('/courses/:course_id/lessons/:lesson_id', [LessonsController, 'delete'])
+
+    router.post('/uploads/editor-image', [UploadsController, 'editorImage'])
   })
   .prefix('/api/v1')
   .use(middleware.auth({ guards: ['api'] }))
